@@ -67,6 +67,8 @@ $RECYCLE.BIN/
 ########################
 tests/screenshots/*
 tests/*.lock
+tests/*.bat
+tests/*.sh
 tests/*.phar
 tests/vendor
 tests/vendor/*
