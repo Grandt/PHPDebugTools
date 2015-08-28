@@ -53,22 +53,38 @@ class HexBlock {
      *
      * The pointer will be returned to the initial position when done, essentially leaving the file stream untouched.
      *
-     * @param resource $handle
-     * @param int      $bytes      number of bytes to print.
-     * @param bool     $encodeHTML Encode the special characters that may occur on the right panel.
+     * @param resource|string $data       a resource handle or a string.
+     * @param int             $bytes      number of bytes to print. -1 will dump the entirety of the file.
+     * @param bool            $encodeHTML Encode the special characters that may occur on the right panel.
      *
      * @return string  The generated Hex Block.
      */
-    public static function createBlock($handle, $bytes, $encodeHTML = true) {
+    public static function createBlock($data, $bytes, $encodeHTML = true) {
         $out = "";
+        /** @var resource $handle */
+        $handle = null;
+        $isLocalHandle = false;
 
-        $pos = ftell($handle);
-        $endPos = $pos + $bytes;
-        $realPos = $pos & 0xfffffff0;
-        fseek($handle, $realPos, SEEK_SET);
+        if (is_string($data)) {
+            $handle = DebugHelpers::str2resource($data);
+            $isLocalHandle = true;
+        } else if (is_resource($data)) {
+            $handle = $data;
+        } else {
+            return $out;
+        }
 
         $stat = fstat($handle);
         $length = $stat['size'];
+        $pos = ftell($handle);
+
+        if ($bytes === -1) {
+            $bytes = $length-$pos;
+        }
+
+        $endPos = $pos + $bytes;
+        $realPos = $pos & 0xfffffff0;
+        fseek($handle, $realPos, SEEK_SET);
 
         $isRangeOverreached = ($pos + $bytes) > $length;
 
@@ -129,7 +145,13 @@ class HexBlock {
             $out .= $rp . "\n";
         }
         $out .= "\n";
-        fseek($handle, $pos, SEEK_SET);
+
+        if ($isLocalHandle) {
+            fclose($handle);
+        } else {
+            fseek($handle, $pos, SEEK_SET);
+        }
+
         return $out;
     }
 }

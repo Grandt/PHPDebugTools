@@ -28,11 +28,26 @@ Call
 
 $encodeHtml merely ensures that any html entities are encoded as such, but doesn't add any line break tags.
 
+The function also accepts a string as an argument (from 1.0.1), and will dump that string from the first byte.
+```php
+    $block = HexBlock::createBlock($dataString, $length, $encodeHtml [Default = true]);
+```
+
+To assist in debugging, having a test string behave as a file handle can be useful. str2resource was added in DebugTools 1.0.1.
+```php
+    $fh = DebugHelpers::str2resource($stringData);
+    // work
+    fclose($fh); // Remember to close the handle to free up memory.
+```
+
+#### Warning
+Parsing -1 as the `$bytes` parameter will cause the function to dump the entirety of the file.
+
 ### Import
 
 Add this requirement to your `composer.json` file:
 ```json
-    "grandt/phpdebugtools": ">=1.0.0"
+    "grandt/phpdebugtools": ">=1.0.1"
 ```
 
 ### Composer
@@ -55,7 +70,7 @@ Once composer is installed you can create the `composer.json` file to import thi
 ```json
 {
     "require": {
-        "grandt/phpdebugtools": ">=1.0.0"
+        "grandt/phpdebugtools": ">=1.0.1"
     }
 }
 ```
@@ -77,13 +92,14 @@ Finally, you include the `autoload.php` file in the new `vendor` directory.
 ```
 
 ### Example
+
 ```php
-include "../vendor/autoload.php";
-use grandt\DebugTools;
+    include "../vendor/autoload.php";
+    use grandt\DebugTools;
 
-$srcFile = "[path to file]";
+    $srcFile = "[path to file]";
 
-$fh = fopen($srcFile, "rb");
-echo HexBlock::createBlock($fh, 68, true);
-fclose($fh);
+    $fh = fopen($srcFile, "rb");
+    echo HexBlock::createBlock($fh, 68, true);
+    fclose($fh);
 ```
