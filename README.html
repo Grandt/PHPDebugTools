@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>DebugTools</title>
+</head>
+<body>
+<h1><a id="user-content-debugtools" class="anchor" href="#debugtools" aria-hidden="true"><span class="octicon octicon-link"></span></a>DebugTools</h1>
+
+<p>This package aims to provide some nice debug tools. Well, just one tool for now.</p>
+
+<h2><a id="user-content-introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>For now, only the HexBlock is added. What it does is provide an easy way to dump binary data directly from a currently open file stream.
+    Example output of a gif file, where the file pointer is on position 3, the method have been told to dump the following 68 bytes.</p>
+
+<p>Note that the file pointer will be reset to its initial position after the dump, essentially leaving the handle unaffected.</p>
+
+<pre><code>    Start: 0x03; Length: 68 (0x44)
+    00: -- -- -- 38 39 61 59 00  68 00 c4 15 00 ad df ff | ---89aY. h.......
+    10: e5 f4 ff cb ea ff ff ff  ff 98 d6 fe b7 b9 bb 81 | ........ ........
+    20: d2 ff 77 cc ff 8f c5 fe  54 9a f5 11 28 7d 65 ab | ..w..... T...(}e.
+    30: fe 52 75 a1 7a b7 fb 66  cc ff 5b cc fe 00 66 ff | .Ru.z..f ..[...f.
+    40: 0f 71 ff ff 39 00 b3 --  -- -- -- -- -- -- -- -- | .q..9..- --------
+</code></pre>
+
+<h2><a id="user-content-usage" class="anchor" href="#usage" aria-hidden="true"><span class="octicon octicon-link"></span></a>Usage</h2>
+
+<p>Call </p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1">    <span class="pl-smi">$block</span> <span class="pl-k">=</span> <span class="pl-c1">HexBlock</span><span class="pl-k">::</span>createBlock(<span class="pl-smi">$handle</span>, <span class="pl-smi">$length</span>, <span class="pl-smi">$encodeHtml</span> [<span class="pl-c1">Default</span> <span class="pl-k">=</span> <span class="pl-c1">true</span>]);</span></pre></div>
+
+<p>$encodeHtml merely ensures that any html entities are encoded as such, but doesn't add any line break tags.</p>
+
+<p>The function also accepts a string as an argument (from 1.0.1), and will dump that string from the first byte.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1">    <span class="pl-smi">$block</span> <span class="pl-k">=</span> <span class="pl-c1">HexBlock</span><span class="pl-k">::</span>createBlock(<span class="pl-smi">$dataString</span>, <span class="pl-smi">$length</span>, <span class="pl-smi">$encodeHtml</span> [<span class="pl-c1">Default</span> <span class="pl-k">=</span> <span class="pl-c1">true</span>]);</span></pre></div>
+
+<p>To assist in debugging, having a test string behave as a file handle can be useful. str2resource was added in DebugTools 1.0.1.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1">    <span class="pl-smi">$fh</span> <span class="pl-k">=</span> <span class="pl-c1">DebugHelpers</span><span class="pl-k">::</span>str2resource(<span class="pl-smi">$stringData</span>);</span>
+<span class="pl-s1">    <span class="pl-c">// work</span></span>
+<span class="pl-s1">    <span class="pl-c1">fclose</span>(<span class="pl-smi">$fh</span>); <span class="pl-c">// Remember to close the handle to free up memory.</span></span></pre></div>
+
+<h4><a id="user-content-warning" class="anchor" href="#warning" aria-hidden="true"><span class="octicon octicon-link"></span></a>Warning</h4>
+
+<p>Parsing -1 as the <code>$bytes</code> parameter will cause the function to dump the entirety of the file.</p>
+
+<h3><a id="user-content-import" class="anchor" href="#import" aria-hidden="true"><span class="octicon octicon-link"></span></a>Import</h3>
+
+<p>Add this requirement to your <code>composer.json</code> file:</p>
+
+<div class="highlight highlight-json"><pre>    <span class="pl-s"><span class="pl-pds">"</span>grandt/phpdebugtools<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>&gt;=1.0.1<span class="pl-pds">"</span></span></pre></div>
+
+<h3><a id="user-content-composer" class="anchor" href="#composer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Composer</h3>
+
+<p>If you already have Composer installed, skip this part.</p>
+
+<p><a href="https://packagist.org/">Packagist</a>, the main composer repository has a neat and very short guide.</p>
+
+<p>Or you can look at the guide at the <a href="https://getcomposer.org/doc/00-intro.md#installation-linux-unix-osx">Composer site</a>.</p>
+
+<p>The easiest for first time users, is to have the composer installed in the same directory as your composer.json file, though there are better options.</p>
+
+<p>Run this from the command line:</p>
+
+<pre><code>php -r "readfile('https://getcomposer.org/installer');" | php
+</code></pre>
+
+<p>This will check your PHP installation, and download the <code>composer.phar</code>, which is the composer binary. This file is not needed on the server though.</p>
+
+<p>Once composer is installed you can create the <code>composer.json</code> file to import this package.</p>
+
+<div class="highlight highlight-json"><pre>{
+    <span class="pl-s"><span class="pl-pds">"</span>require<span class="pl-pds">"</span></span>: {
+        <span class="pl-s"><span class="pl-pds">"</span>grandt/phpdebugtools<span class="pl-pds">"</span></span>: <span class="pl-s"><span class="pl-pds">"</span>&gt;=1.0.1<span class="pl-pds">"</span></span>
+    }
+}</pre></div>
+
+<p>Followed by telling Composer to install the dependencies.</p>
+
+<pre><code>php composer.phar install
+</code></pre>
+
+<p>this will download and place all dependencies defined in your <code>composer.json</code> file in the <code>vendor</code> directory.</p>
+
+<p>Finally, you include the <code>autoload.php</code> file in the new <code>vendor</code> directory.</p>
+
+<div class="highlight highlight-php"><pre><span class="pl-pse">&lt;?php</span><span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-k">require</span> <span class="pl-s"><span class="pl-pds">'</span>vendor/autoload.php<span class="pl-pds">'</span></span>;</span>
+<span class="pl-s1">    <span class="pl-k">.</span></span>
+<span class="pl-s1">    <span class="pl-k">.</span></span>
+<span class="pl-s1">    <span class="pl-k">.</span></span></pre></div>
+
+<h3><a id="user-content-example" class="anchor" href="#example" aria-hidden="true"><span class="octicon octicon-link"></span></a>Example</h3>
+
+<div class="highlight highlight-php"><pre><span class="pl-s1">    <span class="pl-k">include</span> <span class="pl-s"><span class="pl-pds">"</span>../vendor/autoload.php<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1">    <span class="pl-k">use</span> <span class="pl-c1">grandt\DebugTools</span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-smi">$srcFile</span> <span class="pl-k">=</span> <span class="pl-s"><span class="pl-pds">"</span>[path to file]<span class="pl-pds">"</span></span>;</span>
+<span class="pl-s1"></span>
+<span class="pl-s1">    <span class="pl-smi">$fh</span> <span class="pl-k">=</span> <span class="pl-c1">fopen</span>(<span class="pl-smi">$srcFile</span>, <span class="pl-s"><span class="pl-pds">"</span>rb<span class="pl-pds">"</span></span>);</span>
+<span class="pl-s1">    <span class="pl-c1">echo</span> <span class="pl-c1">HexBlock</span><span class="pl-k">::</span>createBlock(<span class="pl-smi">$fh</span>, <span class="pl-c1">68</span>, <span class="pl-c1">true</span>);</span>
+<span class="pl-s1">    <span class="pl-c1">fclose</span>(<span class="pl-smi">$fh</span>);</span></pre></div>
+</body>
+</html>
